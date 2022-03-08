@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const connection = require('./database/database');
 
 const Cardapio = require('./database/Cardapio');
+const { sendStatus } = require('express/lib/response');
 
 //Body parser
 app.use(bodyParser.urlencoded({extended: false}));
@@ -40,12 +41,31 @@ app.get('/cardapio/:id', (req, res) => {
                 id: id
             }
         }).then(cardapios => {
-            if(cardapio != undefined){
+            if(nome != undefined){
                 res.sendStatus(200);
                 res.json('cardapio');
             }else{
                 res.sendStatus(404);
             }
+        })
+    }
+});
+
+//Cadastrar item no cardapio
+app.post('/cardapio', (req,res) => {
+    var { nome, ingredientes } = req.body;
+    if (nome == undefined || nome == " " || ingredientes == undefined){
+        res.sendStatus(400);
+       
+    }else{
+        Cardapio.create({
+            nome: nome,
+            ingredientes: ingredientes
+        }).then(result => {
+            res.sendStatus(201);
+        }).catch(error => {
+            res.sendStatus(500);
+            console.log(error);
         })
     }
 });
