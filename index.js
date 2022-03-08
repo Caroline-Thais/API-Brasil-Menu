@@ -70,6 +70,28 @@ app.post('/cardapio', (req,res) => {
     }
 });
 
+//Deletar dados
+app.delete('/cardapio', (req, res) => {
+    if(isNaN(req.params.id)){
+        res.sendStatus(400)
+    }else{
+        var id = psrseInt(req.params.id);
+        Cardapio.destroy({
+            where:{
+                id: id
+            }
+        }).then(result => {
+            if(index == -1){
+                res.sendStatus(404)
+            }else{
+                res.sendStatus(204)
+            }
+        }).catch(error => {
+            res.sendStatus(500);
+            console.log(error)
+        })
+    }
+});
 
 //Porta
 app.listen(80, () => {
