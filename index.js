@@ -17,7 +17,15 @@ connection.authenticate().then(() => {
 });
 
 //Endpoints
-
+app.get('/cardapio', (req, res) => {
+    Cardapio.findAll().then(cardapios => {
+        res.sendStatus(200);
+        res.json('cardapio');
+    }).catch(error => {
+        res.sendStatus(500);
+        console.log(error);
+    })
+});
 
 
 
