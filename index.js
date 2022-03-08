@@ -17,6 +17,8 @@ connection.authenticate().then(() => {
 });
 
 //Endpoints
+
+//Listagem de cardapio
 app.get('/cardapio', (req, res) => {
     Cardapio.findAll().then(cardapios => {
         res.sendStatus(200);
@@ -27,6 +29,26 @@ app.get('/cardapio', (req, res) => {
     })
 });
 
+//Listagem de resistro único de um item do cardápio
+app.get('/cardapio/:id', (req, res) => {
+    if(isNaN(req.params.id)){
+        res.sendStatus(400)
+    }else{
+        var id = parseInt(req.params.id);
+        Cardapio.findOne({
+            where:{
+                id: id
+            }
+        }).then(cardapios => {
+            if(cardapio != undefined){
+                res.sendStatus(200);
+                res.json('cardapio');
+            }else{
+                res.sendStatus(404);
+            }
+        })
+    }
+});
 
 
 //Porta
