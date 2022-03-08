@@ -93,6 +93,28 @@ app.delete('/cardapio', (req, res) => {
     }
 });
 
+//Edição de dados
+app.put('/cardapio/:id', (req,res) => {
+    if(isNaN(req.params.id)){
+        res.sendStatus(400)
+
+    }else{
+        var id = parseInt(req.params.id);
+        var { nome, ingredientes } = req.body;
+
+        if(nome != undefined || ingredientes != undefined){
+            Cardapio.update({nome: nome, ingredientes: ingredientes}, {
+                where:{
+                    id: id
+                }
+            }).then().catch(error => {
+                res.sendStatus(500);
+                console.log(error);
+            })
+        }                  
+    }
+});
+
 //Porta
 app.listen(80, () => {
     console.log('API rodando na porta 80.')
