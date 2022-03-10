@@ -2,9 +2,12 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const connection = require('./database/database');
+const cors = require('cors');
 
-const Cardapio = require('./database/Cardapio');
-const { sendStatus } = require('express/lib/response');
+const Cardapio = require('./database/Cardapios');
+
+//Cors
+app.use(cors());
 
 //Body parser
 app.use(bodyParser.urlencoded({extended: false}));
@@ -17,20 +20,19 @@ connection.authenticate().then(() => {
     console.log('error')
 });
 
-//Endpoints
-
+//Endpoints:
 //Listagem de cardapio
 app.get('/cardapio', (req, res) => {
-    Cardapio.findAll().then(cardapios => {
+    Cardapio.findAll().then(cardapios => {    
+        res.json(cardapios);
         res.sendStatus(200);
-        res.json('cardapio');
     }).catch(error => {
-        res.sendStatus(500);
         console.log(error);
+        res.sendStatus(500);
     })
 });
 
-//Listagem de resistro único de um item do cardápio
+//Listagem de registro único de um item do cardápio
 app.get('/cardapio/:id', (req, res) => {
     if(isNaN(req.params.id)){
         res.sendStatus(400)
@@ -40,10 +42,10 @@ app.get('/cardapio/:id', (req, res) => {
             where:{
                 id: id
             }
-        }).then(cardapios => {
+        }).then(cardapio => {
             if(nome != undefined){
-                res.sendStatus(200);
-                res.json('cardapio');
+                res.json(cardapio);
+                res.sendStatus(200);               
             }else{
                 res.sendStatus(404);
             }
@@ -53,14 +55,15 @@ app.get('/cardapio/:id', (req, res) => {
 
 //Cadastrar item no cardapio
 app.post('/cardapio', (req,res) => {
-    var { nome, ingredientes } = req.body;
+    var { nome, ingredientes, preco } = req.body;
     if (nome == undefined || nome == " " || ingredientes == undefined){
         res.sendStatus(400);
        
     }else{
         Cardapio.create({
             nome: nome,
-            ingredientes: ingredientes
+            ingredientes: ingredientes,
+            preco: preco
         }).then(result => {
             res.sendStatus(201);
         }).catch(error => {
@@ -71,7 +74,7 @@ app.post('/cardapio', (req,res) => {
 });
 
 //Deletar dados
-app.delete('/cardapio', (req, res) => {
+app.delete('/cardapio/:id', (req, res) => {
     if(isNaN(req.params.id)){
         res.sendStatus(400)
     }else{
@@ -100,10 +103,10 @@ app.put('/cardapio/:id', (req,res) => {
 
     }else{
         var id = parseInt(req.params.id);
-        var { nome, ingredientes } = req.body;
+        var { nome, ingredientes, preco } = req.body;
 
         if(nome != undefined || ingredientes != undefined){
-            Cardapio.update({nome: nome, ingredientes: ingredientes}, {
+            Cardapio.update({nome: nome, ingredientes: ingredientes, preco: preco}, {
                 where:{
                     id: id
                 }
@@ -115,7 +118,9 @@ app.put('/cardapio/:id', (req,res) => {
     }
 });
 
+
+
 //Porta
-app.listen(80, () => {
-    console.log('API rodando na porta 80.')
+app.listen(8080, () => {
+    console.log('API rodando na porta 8080.')
 });

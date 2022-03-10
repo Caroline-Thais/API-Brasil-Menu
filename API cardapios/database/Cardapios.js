@@ -9,7 +9,12 @@ const Cardapio = connection.define('cardapios', {
     ingredientes:{
         type: sequelize.TEXT,
         allowNull: true
-    }
+    },
+    preco:{
+        type: sequelize.FLOAT,
+        allowNull: true
+    },
+
 });
 
 //Cardapio.sync({force: true});

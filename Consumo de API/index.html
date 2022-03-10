@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio Brasil Menu</title>
+</head>
+<body>
+    <h3>Cardápio</h3>
+    <ul id="cardapios"></ul>
+    
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    //Exibir itens do cardápio no front end
+    axios.get('http://localhost:8080/cardapio').then(response => {
+        var cardapios = response.data;
+        var list = document.getElementById('cardapios');
+        cardapios.forEach(cardapio => {
+            var item = document.createElement('li');
+            item.innerHTML = `${cardapio.id}- Nome: ${cardapio.nome} <br> Ingredientes: ${cardapio.ingredientes} <br> Preço: R$ ${cardapio.preco}`;
+            list.appendChild(item);
+        })
+    }).catch(error => {
+        console.log(error)
+    });
+</script>
+</html>
