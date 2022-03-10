@@ -7,8 +7,24 @@
     <title>Cardápio Brasil Menu</title>
 </head>
 <body>
+    <!--Exibe o cardápio-->
     <h3>Cardápio</h3>
     <ul id="cardapios"></ul>
+
+    <!--Cadastro de itens no cardápio-->
+    <h4>Novo item</h4>
+    <input type="text" name="nome" id="nome" placeholder="nome"><br>
+    <input type="text" name="ingredientes" id="ingredientes" placeholder="ingredientes"><br>
+    <input type="text" name="preco" id="preco" placeholder="preço"><br>
+    <button type="button" onclick="createCardapioItem()">Criar</button>
+
+    <!--Edição de itens do cardápio-->
+    <h4>Editar item</h4>
+    <input type="text" name="idEdit" id="idEdit" placeholder="ID" readonly><br>
+    <input type="text" name="nomeEdit" id="nomeEdit" placeholder="nome"><br>
+    <input type="text" name="ingredientesEdit" id="ingredientesEdit" placeholder="ingredientes"><br>
+    <input type="text" name="precoEdit" id="precoEdit" placeholder="preço"><br>
+    <button type="button" onclick="updateCardapioItem()">Editar</button>
     
 </body>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -20,11 +36,84 @@
         var list = document.getElementById('cardapios');
         cardapios.forEach(cardapio => {
             var item = document.createElement('li');
-            item.innerHTML = `${cardapio.id}- Nome: ${cardapio.nome} <br> Ingredientes: ${cardapio.ingredientes} <br> Preço: R$ ${cardapio.preco}`;
+            item.innerHTML = `${cardapio.id} - Nome: ${cardapio.nome} <br> Ingredientes: ${cardapio.ingredientes} <br> Preço: R$ ${cardapio.preco}`;
+            //Criação de botões dinamicamente
+            var deleteBtn = document.createElement('button');
+            deleteBtn.innerHTML = 'Deletar';//Texto dentro do botão
+            deleteBtn.addEventListener('click', function(){
+                deleteCardapioItem(cardapio.id)
+            })
+            var editBtn = document.createElement('button');
+            editBtn.innerHTML = 'Editar';//Texto dentro do botão
+            item.appendChild(deleteBtn);
+            item.appendChild(editBtn);
             list.appendChild(item);
         })
     }).catch(error => {
         console.log(error)
     });
+
+    //Cadastro de itens no cardápio
+    function createCardapioItem(){
+        var nomeInput = document.getElementById('nome');
+        var ingredientesInput = document.getElementById('ingredientes');
+        var precoInput = document.getElementById('preco');
+
+        var cardapio = {
+            nome: nomeInput.value,
+            ingredientes: ingredientesInput.value,
+            preco: precoInput.value
+        }
+    axios.post('http://localhost:8080/cardapio', cardapio).then(response => {       
+            alert('Item cadastrado!');
+            location.reload();    
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+   
+    function deleteCardapioItem(id){
+        axios.delete(`http://localhost:8080/cardapio/${id}`).then(response => {
+            alert('Item deletado!');
+            location.reload();
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
+    //Preencher os campos de editar com os dados atuais
+    function loadForm(cardapio){
+      // var cardapioData = cardapio;
+
+        document.getElementById('idEdit').value = cardapio.id;
+        document.getElementById('nomeEdit').value = cardapio.nome;
+        document.getElementById('ingredientesEdit').value = cardapio.ingredientes;
+        document.getElementById('precoEdit').value = cardapio.preco;
+    }
+
+    //Editar itens do cardápio
+    function updateCardapioItem(){
+        var idInput = document.getElementById('idEdit');
+        var nomeInput = document.getElementById('nomeEdit');
+        var ingredientesInput = document.getElementById('ingredientesEdit');
+        var precoInput = document.getElementById('precoEdit');
+
+        var cardapio = {
+            nome: nomeInput.value,
+            ingredientes: ingredientesInput.value,
+            preco: precoInput.value
+        }
+
+        var id = idInput.value;
+
+        axios.put('http://localhost:8080/cardapio/'+id, cardapio).then(response => {
+            if(response.status == 200){
+                alert('Cardapio atualizado!')
+            }
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+    
 </script>
 </html>

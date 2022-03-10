@@ -27,8 +27,9 @@ app.get('/cardapio', (req, res) => {
         res.json(cardapios);
         res.sendStatus(200);
     }).catch(error => {
-        console.log(error);
         res.sendStatus(500);
+        console.log(error);
+        
     })
 });
 
@@ -78,7 +79,7 @@ app.delete('/cardapio/:id', (req, res) => {
     if(isNaN(req.params.id)){
         res.sendStatus(400)
     }else{
-        var id = psrseInt(req.params.id);
+        var id = parseInt(req.params.id);
         Cardapio.destroy({
             where:{
                 id: id
@@ -105,8 +106,8 @@ app.put('/cardapio/:id', (req,res) => {
         var id = parseInt(req.params.id);
         var { nome, ingredientes, preco } = req.body;
 
-        if(nome != undefined || ingredientes != undefined){
-            Cardapio.update({nome: nome, ingredientes: ingredientes, preco: preco}, {
+        if(nome != undefined){
+            Cardapio.update({nome: nome}, {
                 where:{
                     id: id
                 }
@@ -114,8 +115,29 @@ app.put('/cardapio/:id', (req,res) => {
                 res.sendStatus(500);
                 console.log(error);
             })
-        }                  
+        }   
+        
+        if(ingredientes != undefined){
+            Cardapio.update({ingredientes: ingredientes}, {
+                where:{
+                    id: id
+                }
+            }).then().catch(error => {
+                res.sendStatus(500);
+                console.log(error);
+            })
+        }  
     }
+    if(preco != undefined){
+        Cardapio.update({preco: preco}, {
+            where:{
+                id: id
+            }
+        }).then().catch(error => {
+            res.sendStatus(500);
+            console.log(error);
+        })
+    }  
 });
 
 
