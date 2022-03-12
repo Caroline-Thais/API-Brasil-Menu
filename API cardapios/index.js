@@ -101,22 +101,21 @@ app.delete('/cardapio/:id', (req, res) => {
 app.put('/cardapio/:id', (req,res) => {
     if(isNaN(req.params.id)){
         res.sendStatus(400)
-
     }else{
         var id = parseInt(req.params.id);
         var { nome, ingredientes, preco } = req.body;
-
         if(nome != undefined){
             Cardapio.update({nome: nome}, {
                 where:{
                     id: id
                 }
-            }).then().catch(error => {
+            }).then(response => {
+                res.sendStatus(200)
+            }).catch(error => {
                 res.sendStatus(500);
                 console.log(error);
             })
-        }   
-        
+        }           
         if(ingredientes != undefined){
             Cardapio.update({ingredientes: ingredientes}, {
                 where:{

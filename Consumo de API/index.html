@@ -42,9 +42,16 @@
             deleteBtn.innerHTML = 'Deletar';//Texto dentro do botão
             deleteBtn.addEventListener('click', function(){
                 deleteCardapioItem(cardapio.id)
-            })
-            var editBtn = document.createElement('button');
-            editBtn.innerHTML = 'Editar';//Texto dentro do botão
+                alert('Item deletado!');
+                location.reload();
+            });
+
+            var editBtn = document.createElement("button");
+            editBtn.innerHTML = "Editar";//Texto dentro do botão
+            editBtn.addEventListener("click", function(){
+                loadForm(cardapio);
+            });
+        
             item.appendChild(deleteBtn);
             item.appendChild(editBtn);
             list.appendChild(item);
@@ -74,21 +81,21 @@
    
     function deleteCardapioItem(id){
         axios.delete(`http://localhost:8080/cardapio/${id}`).then(response => {
-            alert('Item deletado!');
-            location.reload();
-        }).catch(error => {
+            console.log("item deletado")
+        }           
+            ).catch(error => {
             console.log(error)
         })
     }
 
     //Preencher os campos de editar com os dados atuais
     function loadForm(cardapio){
-      // var cardapioData = cardapio;
+        var cardapioData = cardapio;
 
-        document.getElementById('idEdit').value = cardapio.id;
-        document.getElementById('nomeEdit').value = cardapio.nome;
-        document.getElementById('ingredientesEdit').value = cardapio.ingredientes;
-        document.getElementById('precoEdit').value = cardapio.preco;
+        document.getElementById('idEdit').value = cardapioData.id;
+        document.getElementById('nomeEdit').value = cardapioData.nome;
+        document.getElementById('ingredientesEdit').value = cardapioData.ingredientes;
+        document.getElementById('precoEdit').value = cardapioData.preco;
     }
 
     //Editar itens do cardápio
@@ -107,9 +114,10 @@
         var id = idInput.value;
 
         axios.put('http://localhost:8080/cardapio/'+id, cardapio).then(response => {
-            if(response.status == 200){
-                alert('Cardapio atualizado!')
-            }
+            
+                alert('Cardapio atualizado!');
+                location.reload();
+            
         }).catch(error => {
             console.log(error);
         })
