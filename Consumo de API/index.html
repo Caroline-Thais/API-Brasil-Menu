@@ -4,29 +4,77 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://as1.ftcdn.net/v2/jpg/03/66/50/90/1000_F_366509040_O7Zx3URiJN0zSQJRf3E4GZM6HEFinpc2.jpg" type="image/x-icon">
     <title>Cardápio Brasil Menu</title>
 </head>
 <body>
-    <!--Exibe o cardápio-->
-    <h3>Cardápio</h3>
-    <ul id="cardapios"></ul>
+    <img id="logo" src="./images/brasilmenu.gif" height="80em">
 
-    <!--Cadastro de itens no cardápio-->
-    <h4>Novo item</h4>
-    <input type="text" name="nome" id="nome" placeholder="nome"><br>
-    <input type="text" name="ingredientes" id="ingredientes" placeholder="ingredientes"><br>
-    <input type="text" name="preco" id="preco" placeholder="preço"><br>
-    <button type="button" onclick="createCardapioItem()">Criar</button>
+    <div class="wrap">
+        <div class="cardapio-list">
+            <!--Exibe o cardápio-->
+            <h3>Cardápio</h3>
+            <div class="itens">
+                <ul id="cardapios"></ul>
+            </div>
+        </div>
+        <div class="register-Edit">
+            <!--Cadastro de itens no cardápio-->
+            <h4>Novo item</h4>
+            <input type="text" name="nome" id="nome" placeholder="nome"><br>
+            <input type="text" name="ingredientes" id="ingredientes" placeholder="ingredientes"><br>
+            <input type="text" name="preco" id="preco" placeholder="preço"><br>
+            <button type="button" onclick="createCardapioItem()">Criar</button>
 
-    <!--Edição de itens do cardápio-->
-    <h4>Editar item</h4>
-    <input type="text" name="idEdit" id="idEdit" placeholder="ID" readonly><br>
-    <input type="text" name="nomeEdit" id="nomeEdit" placeholder="nome"><br>
-    <input type="text" name="ingredientesEdit" id="ingredientesEdit" placeholder="ingredientes"><br>
-    <input type="text" name="precoEdit" id="precoEdit" placeholder="preço"><br>
-    <button type="button" onclick="updateCardapioItem()">Editar</button>
-    
+            <!--Edição de itens do cardápio-->
+            <h4>Editar item</h4>
+            <input type="text" name="idEdit" id="idEdit" placeholder="ID" readonly><br>
+            <input type="text" name="nomeEdit" id="nomeEdit" placeholder="nome"><br>
+            <input type="text" name="ingredientesEdit" id="ingredientesEdit" placeholder="ingredientes"><br>
+            <input type="text" name="precoEdit" id="precoEdit" placeholder="preço"><br>
+            <button type="button" onclick="updateCardapioItem()">Editar</button>
+        </div>
+    </div>
 </body>
+
+<style>
+    *{
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    }
+    .wrap{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 2% 5%;
+    }
+
+    ul{
+        list-style-type: none;
+    }
+
+    li{
+        padding-bottom: 10%;       
+    }
+
+    button{
+        margin: 1%;
+        padding: 1% 2%;
+        border-style: none;
+        border-radius: 4%;
+        background-color: #18423c;
+        color: white;
+    }
+
+    input{
+        padding: 3% 10%;
+        margin: 1%;
+    }
+
+ 
+
+   
+</style>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
@@ -36,7 +84,7 @@
         var list = document.getElementById('cardapios');
         cardapios.forEach(cardapio => {
             var item = document.createElement('li');
-            item.innerHTML = `${cardapio.id} - Nome: ${cardapio.nome} <br> Ingredientes: ${cardapio.ingredientes} <br> Preço: R$ ${cardapio.preco}`;
+            item.innerHTML = `<em><b>${cardapio.nome}</b></em> <br><hr> Ingredientes: ${cardapio.ingredientes} <br><hr> Preço: R$ ${cardapio.preco}<hr>`;
             //Criação de botões dinamicamente
             var deleteBtn = document.createElement('button');
             deleteBtn.innerHTML = 'Deletar';//Texto dentro do botão
@@ -44,7 +92,7 @@
                 deleteCardapioItem(cardapio.id)
                 alert('Item deletado!');
                 location.reload();
-            });
+           });
 
             var editBtn = document.createElement("button");
             editBtn.innerHTML = "Editar";//Texto dentro do botão
@@ -81,7 +129,7 @@
    
     function deleteCardapioItem(id){
         axios.delete(`http://localhost:8080/cardapio/${id}`).then(response => {
-            console.log("item deletado")
+           console.log("Item deletado.")     
         }           
             ).catch(error => {
             console.log(error)
@@ -114,10 +162,10 @@
         var id = idInput.value;
 
         axios.put('http://localhost:8080/cardapio/'+id, cardapio).then(response => {
-            
+            if(response.status == 200){
                 alert('Cardapio atualizado!');
                 location.reload();
-            
+            }
         }).catch(error => {
             console.log(error);
         })
