@@ -5,6 +5,7 @@ const connection = require('./database/database');
 const cors = require('cors');
 
 const Cardapio = require('./database/Cardapios');
+const User = require('./database/Users');
 
 //Cors
 app.use(cors());
@@ -139,6 +140,30 @@ app.put('/cardapio/:id', (req,res) => {
     }  
 });
 
+//Login
+app.post('/auth', (req, res) => {
+    var { usuario, senha } = req.body;
+    if(User != undefined && senha != undefined){
+        User.findOne({
+            where:{
+                email: email
+            }
+        }).then(user => {
+            if(usuario != undefined){
+                if(user.senha == senha){
+                    res.json({token: "Token!"});
+                    res.sendStatus(200);
+                }else{
+                    res.json({err: 'Credenciais inválidas'});
+                    res.sendStatus(401);
+                }
+                }else{
+                    res.json({err: 'O email enviado não existe na base de dados.'});
+                    res.sendStatus(404);
+                }           
+        })
+    }
+});
 
 
 //Porta
