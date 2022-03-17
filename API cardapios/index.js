@@ -3,9 +3,14 @@ const app = express();
 const bodyParser = require('body-parser');
 const connection = require('./database/database');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 
 const Cardapio = require('./database/Cardapios');
 const User = require('./database/Users');
+
+//Token autenticação
+const JWTSecret = 'abcdefgh';
+
 
 //Cors
 app.use(cors());
@@ -143,16 +148,25 @@ app.put('/cardapio/:id', (req,res) => {
 //Login
 app.post('/auth', (req, res) => {
     var { usuario, senha } = req.body;
-    if(User != undefined && senha != undefined){
+    if(usuario != undefined && senha != undefined){
         User.findOne({
             where:{
-                email: email
+                usuario: usuario
             }
         }).then(user => {
             if(usuario != undefined){
                 if(user.senha == senha){
-                    res.json({token: "Token!"});
-                    res.sendStatus(200);
+
+                    jwt.sign({id: user.id, usuario: user.usuario}, JWTSecret, {
+                        expiresIn: '24h'},(error, token) => {
+                            if(error){
+                                res.sendStatus(400);
+                                res.json({error:'Falha interna'});
+                            }else{
+                                res.sendStatus(200);
+                                res.json({token: token});
+                            }
+                        })
                 }else{
                     res.json({err: 'Credenciais inválidas'});
                     res.sendStatus(401);
