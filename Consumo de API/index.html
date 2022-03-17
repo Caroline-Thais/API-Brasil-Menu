@@ -10,6 +10,13 @@
 <body>
     <img id="logo" src="./images/brasilmenu.gif" height="80em">
 
+    <div id="login">
+        <h2>Login</h2>
+        <input class="login" type="text" name="usuario" id="usuario" placeholder="usuário"><br>
+        <input class="login" type="password" name="senha" id="senha" placeholder="senha"><br>
+        <button onclick="login()">Entrar</button>
+    </div>
+    <div class="card">
     <div class="wrap">
         <div class="cardapio-list">
             <!--Exibe o cardápio-->
@@ -35,6 +42,7 @@
             <button type="button" onclick="updateCardapioItem()">Editar</button>
         </div>
     </div>
+</div>
 </body>
 
 <style>
@@ -71,15 +79,45 @@
         margin: 1%;
     }
 
- 
+    .login{
+        padding: 1% 2%;
+
+    }
 
    
 </style>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
+
+    var axiosConfig = {
+        headers:{
+            Authorization: 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXN1YXJpbyI6Ik1hcmlhIiwiaWF0IjoxNjQ3NTI1ODMyLCJleHAiOjE2NDc2MTIyMzJ9.8JtjqZK2Aaxf16Dw43olJonc15GA1lB646YnEU2e3bk'
+        }
+    }
+
+    function login(){
+        var usuarioField = document.getElementById('usuario');
+        var senhaField = document.getElementById('senha');
+        var usuario = usuarioField.value;
+        var senha = senhaField.value;
+
+            //autenticação
+            axios.post('http://localhost:8080/auth', {
+                usuario,
+                senha
+            }).then(res => {
+                var token = res.data.token;
+                document.getElementById("login").style.display = "none";
+
+                alert('Logado!');
+            }).catch(error => {
+                alert('Tente novamente!')
+            })  
+    }
+    
     //Exibir itens do cardápio no front end
-    axios.get('http://localhost:8080/cardapio').then(response => {
+    axios.get('http://localhost:8080/cardapio', axiosConfig).then(response => {
         var cardapios = response.data;
         var list = document.getElementById('cardapios');
         cardapios.forEach(cardapio => {
@@ -171,5 +209,7 @@
         })
     }
     
+  
+
 </script>
 </html>
