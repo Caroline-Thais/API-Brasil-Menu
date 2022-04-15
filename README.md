@@ -9,3 +9,9 @@ Próximas implementações:
 - HATEOAS
 - fotos dos cardápios
 
+---
+<div align="center">
+Desenvolvido por THAÍS CAROLINE SILVA 
+<img src="https://cdn-icons-png.flaticon.com/512/2618/2618497.png" height="40em"> 
+</div>
+
