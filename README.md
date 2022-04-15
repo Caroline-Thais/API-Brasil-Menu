@@ -7,7 +7,7 @@ Próximas implementações:
 - autenticação e sistema de login ✔️(OK em 17/3)
 - documentação da API
 - HATEOAS
-- fotos dos cardápios
+
 
 ---
 <div align="center">
